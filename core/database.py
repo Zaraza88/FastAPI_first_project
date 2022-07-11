@@ -21,6 +21,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
-
-        # git add blog core routers user main.py requirements.txt 
