@@ -1,34 +1,20 @@
 from datetime import datetime
 
-from fastapi import Depends, HTTPException, status
+from fastapi import HTTPException, status
 from pydantic import EmailStr
 from sqlalchemy.orm.session import Session
 
-from user.schemas import UserCreateSchemas
+from user.schemas import UserCreateSchemas, SuperUserShemas
 from user.models import UserDB
 from user.hash import bcrypt
+from core.base_crud import BaseCRUD
     
 
-class User:
-    """CRUD юзера"""
+class User(BaseCRUD[UserDB, UserCreateSchemas, SuperUserShemas]):
+    """CRUD юзера для пользования администратором"""
 
-    def create_a_simple_user(self, request: UserCreateSchemas, db: Session):
-        new_user = UserDB(
-            username = request.username, 
-            email = request.email, 
-            password = bcrypt(request.password),
-            date_of_creation = datetime.now()
-        )
-        db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
-        return new_user
-
-    def get_all_users(self, db: Session):
-        return db.query(UserDB).all()
-
-    def create_superuser(self, request: UserCreateSchemas, db: Session,):
-        new_user = UserDB(
+    def create_superuser(self, request: UserCreateSchemas, db: Session):
+        obj = self.model(
             username = request.username, 
             email = request.email, 
             password = bcrypt(request.password),
@@ -36,44 +22,29 @@ class User:
             is_active = request.is_active,
             is_admin = request.is_admin
         )
-        db.add(new_user)
+        db.add(obj)
         db.commit()
-        db.refresh(new_user)
-        return new_user
+        db.refresh(obj)
+        return obj
 
-
-    def delete(self, id: int, db: Session):
-        user = db.query(UserDB).filter(UserDB.id == id).first()
-        if user:
-            db.delete(user)
-            db.commit()
-            return 'ok'
-        else:
+    def update(self, id: int, request: SuperUserShemas, db: Session):
+        obj = db.query(self.model).filter(self.model.id == id)
+        if not obj.first():
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f'Пользователя с id {id} не существует'
+                detail=f'{self.name_obj} с id {id} не существует'
             )
-
-    def update(self, id: int, request: UserCreateSchemas, db: Session):
-        user = db.query(UserDB).filter(UserDB.id == id)
-        if not user.first():
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f'Пользователя с id {id} не существует'
-            )
-        user.update({
-            UserDB.username: request.title,
-            UserDB.email: request.text,
-            UserDB.password: bcrypt(request.password),
-            UserDB.date_of_creation: datetime.now(),
-            UserDB.is_active: request.text,
-            UserDB.is_admin: request.text,
+        obj.update({
+            self.model.username: request.username,
+            self.model.email: request.email,
+            self.model.password: bcrypt(request.password),
+            self.model.date_of_creation: datetime.now(),
+            self.model.is_active: request.is_active,
+            self.model.is_admin: request.is_admin,
         })
         db.commit()
-        return user.first()
+        return obj.first()
 
-    # def get_by_email(self, db: Session, email: EmailStr):
-    #     return db.query(UserDB).filter(UserDB.email == email).first()
 
     def is_active(self, user: UserDB):
         return user.is_active
@@ -81,5 +52,17 @@ class User:
     def is_admin(self, user: UserDB):
         return user.is_admin
 
+    def get_user_id(self, db: Session, id: int):
+        return db.query(self.model).filter(self.model.id == id).first()
 
-user_crud = User()
+    # def is_staff(self, user: UserDB):
+    #     return user.is_staff
+
+    # def is_manager(self, user: UserDB):
+    #     return user.is_staff
+
+    # def get_by_email(self, db: Session, email: EmailStr):
+    #     return db.query(self.model).filter(self.model.email == email).first()
+
+
+user_crud = User(UserDB, 'Пользователь')
