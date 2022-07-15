@@ -1,8 +1,9 @@
 from jose import jwt
 
+from pydantic import EmailStr
+
 from fastapi import HTTPException, Depends, status
 from fastapi.param_functions import Depends
-from pydantic import EmailStr
 from sqlalchemy.orm.session import Session
 
 from core.database import get_db
@@ -19,7 +20,7 @@ def get_current_user(token: str = Depends(JWTBearer()), db: Session = Depends(ge
     """Получение текущего пользователя"""
     creadentials_exceprion = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail='oshibka 401',
+        detail='Учетные данные недействительны',
         headers={"WWW-Authenticate": "Bearer"}
     )
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])

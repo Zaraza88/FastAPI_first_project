@@ -46,3 +46,12 @@ class UsersDisplaySchemas(BaseUserSchema):
 class SuperUserShemas(UserCreateSchemas):
     is_active: bool
     is_admin: bool
+
+
+class ViewUserForBlog(BaseModel):
+    id: int
+    username: str
+    email: EmailStr
+
+    class Config():
+        orm_mode = True

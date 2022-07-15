@@ -18,5 +18,7 @@ class UserDB(Base):
     date_of_creation = Column(DateTime)
     is_active = Column(Boolean, default=False)
     is_admin = Column(Boolean, default=False)
+    # is_staff = Column(Boolean, default=False)
+    # is_manager = Column(Boolean, default=False)
     posts = relationship('PostDB', back_populates='user')
     commented = relationship('CommentDB', back_populates='user_comment')
