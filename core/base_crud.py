@@ -19,7 +19,6 @@ class BaseCRUD(Generic[ModelType, CreateSchemasType, UpdateSchemasType]):
         """
         model - Модель данных
         name_obj - Наименование объекта(для эксепшенов)
-        obj - Сам объект данных
         """
         self.model = model
         self.name_obj = name_obj

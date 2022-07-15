@@ -1,4 +1,5 @@
 from jose import jwt
+
 from datetime import datetime, timedelta
 
 from fastapi import HTTPException, Request, status
@@ -8,6 +9,7 @@ from core.settings import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
 
 class JWTBearer(HTTPBearer):
+    """Достаем и проверяем барьер токен"""
     def __init__(self, auto_error: bool = True):
         super(JWTBearer, self).__init__(auto_error=auto_error)
 
