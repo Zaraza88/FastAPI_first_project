@@ -1,12 +1,11 @@
 from datetime import datetime
-from typing import List
 
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm.session import Session
 
 from user.schemas import ViewUserForBlog
 from blog.schemas import BlogCreateSchema
-from blog.models import CommentDB, PostDB
+from blog.models import PostDB
 from auth.depends import get_current_user
 from core.base_crud import BaseCRUD
 

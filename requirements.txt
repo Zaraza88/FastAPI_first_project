@@ -4,3 +4,4 @@ sqlalchemy
 python-jose
 pydantic[email]
 python-dotenv
+passlib

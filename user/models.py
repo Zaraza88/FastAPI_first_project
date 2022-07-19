@@ -1,10 +1,10 @@
 from sqlalchemy import (
-    Boolean, Column, Integer, String, ForeignKey, DateTime
+    Boolean, Column, Integer, String, DateTime
 )
 from sqlalchemy.orm import relationship     
 
 from core.database import Base
-# from blog.models import PostDB, CommentDB
+from blog.models import PostDB
 
 
 class UserDB(Base):
@@ -18,7 +18,6 @@ class UserDB(Base):
     date_of_creation = Column(DateTime)
     is_active = Column(Boolean, default=False)
     is_admin = Column(Boolean, default=False)
-    # is_staff = Column(Boolean, default=False)
-    # is_manager = Column(Boolean, default=False)
+    is_superuser = Column(Boolean, default=False)
     posts = relationship('PostDB', back_populates='user')
     commented = relationship('CommentDB', back_populates='user_comment')

@@ -19,8 +19,8 @@ class User(BaseCRUD[UserDB, UserCreateSchemas, SuperUserShemas]):
             email = request.email, 
             password = bcrypt(request.password),
             date_of_creation = datetime.now(),
-            is_active = request.is_active,
-            is_admin = request.is_admin
+            is_active = True,
+            is_superuser = True,
         )
         db.add(obj)
         db.commit()
@@ -55,14 +55,12 @@ class User(BaseCRUD[UserDB, UserCreateSchemas, SuperUserShemas]):
     def get_user_id(self, db: Session, id: int):
         return db.query(self.model).filter(self.model.id == id).first()
 
-    # def is_staff(self, user: UserDB):
-    #     return user.is_staff
+    def is_superuser(self, user: UserDB):
+        return user.is_superuser
 
     # def is_manager(self, user: UserDB):
     #     return user.is_staff
 
-    # def get_by_email(self, db: Session, email: EmailStr):
-    #     return db.query(self.model).filter(self.model.email == email).first()
 
 
 user_crud = User(UserDB, 'Пользователь')
