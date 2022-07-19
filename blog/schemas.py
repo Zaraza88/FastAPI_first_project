@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import List
-from pydantic import BaseModel, EmailStr, validator
+from pydantic import BaseModel
 
+from comments.schemas import ViewCommentForBlog
 from user.schemas import ViewUserForBlog
 
 
@@ -16,8 +17,7 @@ class BlogDisplaySchema(BaseBlogSchema):
     """Схева для вывод постов"""
     id: int #чисто для проверки(потом убрать)
     user: ViewUserForBlog
-    #comment
-    
+    comments: List[ViewCommentForBlog]
 
     class Config:
         orm_mode = True
@@ -26,12 +26,4 @@ class BlogDisplaySchema(BaseBlogSchema):
 class BlogCreateSchema(BaseBlogSchema):
     """Схема создания постов"""
     pass
-
-
-class BaseCommentSchema(BaseModel):
-    """Базовая схема комментариев"""
-    id: int
-    text: str
-
-
 

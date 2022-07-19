@@ -1,9 +1,10 @@
 from sqlalchemy import (
-    Column, DateTime, Integer, String, ForeignKey)
+    Column, DateTime, Integer, String, ForeignKey
+)
 from sqlalchemy.orm import relationship     
 
 from core.database import Base
-from user.models import UserDB
+# from user.models import UserDB
 
 
 class PostDB(Base):

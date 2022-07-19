@@ -1,7 +1,6 @@
 import re
 from datetime import datetime
 
-from typing import List
 from pydantic import BaseModel, EmailStr, validator
 
 
@@ -41,11 +40,13 @@ class UsersDisplaySchemas(BaseUserSchema):
     date_of_creation: datetime
     is_active: bool
     is_admin: bool
+    is_superuser: bool
 
 
 class SuperUserShemas(UserCreateSchemas):
     is_active: bool
     is_admin: bool
+    is_superuser: bool
 
 
 class ViewUserForBlog(BaseModel):

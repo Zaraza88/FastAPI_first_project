@@ -1,12 +1,13 @@
+from typing import List
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm.session import Session
-from typing import List
 
 from user.schemas import ViewUserForBlog
 from auth.depends import get_current_user
 from blog.schemas import BlogCreateSchema, BlogDisplaySchema
-from core.database import get_db
 from blog.blog_db import post
+from core.database import get_db
 
 
 router = APIRouter(prefix='/post', tags=['post'])
@@ -28,7 +29,7 @@ def get_all_post(db: Session = Depends(get_db)):
 
 @router.delete(
     '/delete/{id}', 
-    # dependencies=[Depends(get_current_user)]
+    dependencies=[Depends(get_current_user)]
     )
 def delete_post(id: int, db: Session = Depends(get_db)):
     return post.delete(id, db)

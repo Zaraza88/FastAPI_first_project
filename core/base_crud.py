@@ -16,14 +16,13 @@ class BaseCRUD(Generic[ModelType, CreateSchemasType, UpdateSchemasType]):
     """CRUD поста"""
 
     def __init__(self, model: Type[ModelType], name_obj: str):
-        """
-        model - Модель данных
+        """model - Модель данных
         name_obj - Наименование объекта(для эксепшенов)
         """
         self.model = model
         self.name_obj = name_obj
 
-    def get_all(self, db: Session):
+    def get_all(self, db: Session, **kwargs):
         return db.query(self.model).all()
 
     def retrieve_one(self, id: int, db: Session):
@@ -46,6 +45,7 @@ class BaseCRUD(Generic[ModelType, CreateSchemasType, UpdateSchemasType]):
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f'{self.name_obj} с id {id} не существует'
             )
+
     def create(self, request: CreateSchemasType, db: Session, **kwargs):
         pass
 
