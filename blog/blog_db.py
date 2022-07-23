@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm.session import Session
@@ -39,6 +40,19 @@ class Post(BaseCRUD[PostDB, BlogCreateSchema, BlogCreateSchema]):
         })
         db.commit()
         return obj.first()
+
+    def search(self, query: Optional[str], db: Session):
+        item = db.query(PostDB).filter(PostDB.title.contains(query)).all()
+        return item
+
+    def filter(self, title: Optional[str], text: Optional[str], db: Session):
+        # TODO: пока так, потом ченить другое придумаю 
+        title = db.query(PostDB).filter(PostDB.title == title).all()
+        if title:
+            return title
+        text = db.query(PostDB).filter(PostDB.text == text)
+        if text:
+            return text
 
 
 post = Post(PostDB, 'Пост')

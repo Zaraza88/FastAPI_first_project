@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm.session import Session
@@ -29,7 +29,7 @@ def get_all_post(db: Session = Depends(get_db)):
 
 @router.delete(
     '/delete/{id}', 
-    dependencies=[Depends(get_current_user)]
+    # dependencies=[Depends(get_current_user)]
     )
 def delete_post(id: int, db: Session = Depends(get_db)):
     return post.delete(id, db)
@@ -47,3 +47,13 @@ def get_one_post(id: int, db: Session = Depends(get_db)):
     )
 def update_post(id: int, request: BlogCreateSchema, db: Session = Depends(get_db)):
     return post.update(id, request, db)
+
+
+@router.get('/search')
+def search_post(query: Optional[str], db: Session = Depends(get_db)):
+    return post.search(query, db)
+
+
+@router.get('/filter')
+def filter_data(title: Optional[str], text: Optional[str], db: Session = Depends(get_db)):
+    return post.filter(title, text, db)
