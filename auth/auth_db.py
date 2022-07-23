@@ -38,6 +38,14 @@ class UserAuthorization:
             password = bcrypt(request.password),
             date_of_creation = datetime.now()
         )
+ 
+        email = [x.email for x in db.query(UserDB.email).distinct()]
+        if new_user.email in email:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                detail=f"""Пользователь с {new_user.email} уже существует"""
+            )
+
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
